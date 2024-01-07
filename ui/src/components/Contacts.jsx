@@ -7,7 +7,7 @@ export default function Contacts({ contacts, changeChat }) {
   const [currentUserName, setCurrentUserName] = useState(undefined);
   const [currentUserImage, setCurrentUserImage] = useState(undefined);
   const [currentSelected, setCurrentSelected] = useState(undefined);
-  const [onlineUsers, setOnlineUsers] = useState(useOnlineUsers());
+  const [onlineUsers, setOnlineUsers] = useState(new Map());
 
   const updateOnlineUsers = (userId, isOnline) => {
     setOnlineUsers((prevOnlineUsers) => {
@@ -21,6 +21,10 @@ export default function Contacts({ contacts, changeChat }) {
     const data = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
     setCurrentUserName(data?.username);
     setCurrentUserImage(data?.avatarImage);
+
+    // Fetch initial online status for all contacts
+    fetchInitialOnlineStatus();
+
   }, []);
 
   const changeCurrentChat = (index, contact) => {
@@ -51,6 +55,20 @@ export default function Contacts({ contacts, changeChat }) {
       }
     };
   }, [socket, updateOnlineUsers]);
+
+  const fetchInitialOnlineStatus = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/auth/initialonlinestatus`);
+      const initialOnlineStatus = await response.json();
+      
+      // Update online status for all contacts
+      initialOnlineStatus.forEach((user) => {
+        updateOnlineUsers(user._id, user.online);
+      });
+    } catch (error) {
+      console.error("Error fetching initial online status", error);
+    }
+  };
 
   return (
     <>

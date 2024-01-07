@@ -60,6 +60,16 @@ module.exports.getAllUsers = async (req, res, next) => {
   }
 };
 
+module.exports.fetchInitialOnlineStatus = async (req, res, next) => {
+  try {
+    const users = await User.find().select(["_id", "online"]);
+
+    res.json(users);
+  } catch (ex) {
+    next(ex);
+  }
+};
+
 module.exports.setAvatar = async (req, res, next) => {
   try {
     const userId = req.params.id;

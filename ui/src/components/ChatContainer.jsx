@@ -11,6 +11,7 @@ export default function ChatContainer({ currentChat, socket, contacts }) {
   const scrollRef = useRef();
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [isTyping, setIsTyping] = useState(false);
+  const [tid, setTid] = useState(null);
 
   useEffect(async () => {
     const data = await JSON.parse(
@@ -61,9 +62,13 @@ export default function ChatContainer({ currentChat, socket, contacts }) {
       });
 
       socket.current.on("typing..", (data) => {
+        console.log("data id", data._id);
         const localData = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
+        console.log("local data id", localData._id);
         if (data._id === localData._id) {
           setIsTyping(data.isTyping);
+        } else {
+          setIsTyping(false);
         }
       });
     }

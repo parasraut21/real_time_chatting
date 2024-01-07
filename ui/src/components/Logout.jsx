@@ -17,6 +17,7 @@ export default function Logout() {
     
     // Disconnect the socket before logging out
     if (socket) {
+      socket.emit("disconnectMain",id)
       socket.disconnect();
     }
 

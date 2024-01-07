@@ -32,12 +32,12 @@ export default function Contacts({ contacts, changeChat }) {
 
   useEffect(() => {
     const handleUserOnline = (data) => {
-      console.log("User online:", data);
+      console.log("User online:++++++++++++==", data);
       updateOnlineUsers(data.userId, true);
     };
 
     const handleUserOffline = (data) => {
-      console.log("User offline:", data);
+      console.log("User offline:--------------", data);
       updateOnlineUsers(data.userId, false);
     };
 

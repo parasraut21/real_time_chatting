@@ -74,6 +74,11 @@ io.on("connection", (socket) => {
       socket.broadcast.emit("userOffline", { userId: userIdToRemove, online: false });
     }
   });
+
+
+  socket.on("disconnectMian", (id) => {
+    socket.broadcast.emit("userOffline", { userId: id, online: false });
+  });
 });
 
 

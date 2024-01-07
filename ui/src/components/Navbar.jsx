@@ -2,7 +2,9 @@ import { Link, useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { logoutRoute } from "../utils/APIRoutes";
+import { useSocket } from "../socket/SocketContext";
 const Navbar = () => {
+  const socket = useSocket();
   const [currentUserName, setCurrentUserName] = useState(undefined);
   const [currentUserImage, setCurrentUserImage] = useState(undefined);
   const navigate = useNavigate();
@@ -25,6 +27,7 @@ const Navbar = () => {
     )._id;
     const data = await axios.get(`${logoutRoute}/${id}`);
     if (data.status === 200) {
+      socket.emit("disconnectMian",id)
       console.log("logout successful");
       localStorage.clear();
       navigate("/login");

@@ -3,8 +3,11 @@ import { BsEmojiSmileFill } from "react-icons/bs";
 import { IoMdSend } from "react-icons/io";
 import styled from "styled-components";
 import Picker from "emoji-picker-react";
+// import { Socket } from "socket.io-client";
+import { useSocket } from "../socket/SocketContext";
 
-export default function ChatInput({ handleSendMsg }) {
+export default function ChatInput({ handleSendMsg , currentChat }) {
+  const socket = useSocket();
   const [msg, setMsg] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const handleEmojiPickerhideShow = () => {
@@ -33,11 +36,17 @@ export default function ChatInput({ handleSendMsg }) {
           {showEmojiPicker && <Picker onEmojiClick={handleEmojiClick} />}
         </div>
       </div>
-      <form className="input-container" onSubmit={(event) => sendChat(event)}>
+      <form className="input-container" onSubmit={(event) =>{
+      sendChat(event) ;
+      
+      }}>
         <input
           type="text"
           placeholder="type your message here"
-          onChange={(e) => setMsg(e.target.value)}
+          onChange={(e) => {setMsg(e.target.value) ; socket.emit("typing",currentChat);   }}
+          onBlur={() => {
+            socket.emit("stopTyping",  currentChat );
+          }}
           value={msg}
         />
         <button type="submit">

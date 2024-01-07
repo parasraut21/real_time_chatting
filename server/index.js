@@ -75,6 +75,17 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("typing", (data) => {
+    console.log("typing to - ", data.username ,"----",data._id)
+    socket.broadcast.emit("typing..", { _id: data._id, isTyping: true });
+
+
+  })
+
+  socket.on("stopTyping", (data) => {
+    console.log("stop typing to - ", data.username ,"----",data._id)
+    socket.broadcast.emit("typing..", { _id: data._id, isTyping: false });
+  });
 
   socket.on("disconnectMian", (id) => {
     socket.broadcast.emit("userOffline", { userId: id, online: false });

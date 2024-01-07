@@ -6,10 +6,11 @@ import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 import { sendMessageRoute, recieveMessageRoute } from "../utils/APIRoutes";
 
-export default function ChatContainer({ currentChat, socket,contacts }) {
+export default function ChatContainer({ currentChat, socket, contacts }) {
   const [messages, setMessages] = useState([]);
   const scrollRef = useRef();
   const [arrivalMessage, setArrivalMessage] = useState(null);
+  const [isTyping, setIsTyping] = useState(false);
 
   useEffect(async () => {
     const data = await JSON.parse(
@@ -58,6 +59,13 @@ export default function ChatContainer({ currentChat, socket,contacts }) {
       socket.current.on("msg-recieve", (msg) => {
         setArrivalMessage({ fromSelf: false, message: msg });
       });
+
+      socket.current.on("typing..", (data) => {
+        const localData = JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY));
+        if (data._id === localData._id) {
+          setIsTyping(data.isTyping);
+        }
+      });
     }
   }, []);
 
@@ -81,27 +89,7 @@ export default function ChatContainer({ currentChat, socket,contacts }) {
           </div>
           <div className="username">
             <h3>{currentChat.username}</h3>
-           
-            <div className="contacts">
-       {contacts.map((contact, index) => {
-    return (
-      <div key={contact._id}>
-        {contact._id === currentChat._id && (
-          <div>
-            <span>
-              <b className="text-white">
-                {contact.isTyping ? "Typing..." : "No Typing"}
-              </b>
-            </span>
-          </div>
-        )}
-      </div>
-    );
-  })}
-</div>
-
-
-
+            {isTyping && <b  style={{color:"white"}} >Typing...</b>}
           </div>
         </div>
         <Logout />
@@ -122,11 +110,13 @@ export default function ChatContainer({ currentChat, socket,contacts }) {
             </div>
           );
         })}
+       
       </div>
-      <ChatInput handleSendMsg={handleSendMsg} />
+      <ChatInput handleSendMsg={handleSendMsg} currentChat={currentChat}/>
     </Container>
   );
 }
+
 
 const Container = styled.div`
   display: grid;

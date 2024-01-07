@@ -72,47 +72,50 @@ export default function Contacts({ contacts, changeChat }) {
 
   return (
     <>
-      {currentUserImage && (
-        <Container>
-          <div className="brand">
-            <h3>Made by Paras Raut</h3>
-          </div>
-          <div className="contacts">
-            {contacts.map((contact, index) => {
-              const isOnline = onlineUsers.get(contact._id);
+    {currentUserImage && (
+      <Container>
+        <div className="brand">
+          <h3>Made by Paras Raut</h3>
+        </div>
+        <div className="contacts">
+          {contacts.map((contact, index) => {
+            const isOnline = onlineUsers.get(contact._id);
 
-              return (
-                <div
-                  key={contact._id}
-                  className={`contact ${index === currentSelected ? "selected" : ""}`}
-                  onClick={() => changeCurrentChat(index, contact)}
-                >
-                  <div className="avatar">
-                    <img src={`data:image/svg+xml;base64,${contact.avatarImage}`} alt="" />
-                  </div>
-                  <div className="username">
-                    <h3>{contact.username}</h3>
-                    <span>
-                      <b className={`text-${isOnline ? "success" : "danger"}`}>
-                        {isOnline ? "Online" : "Offline"}
-                      </b>
-                    </span>
-                  </div>
+            return (
+              <div
+                key={contact._id}
+                className={`contact ${index === currentSelected ? "selected" : ""}`}
+                onClick={() => changeCurrentChat(index, contact)}
+              >
+                <div className="avatar">
+                  <img src={`data:image/svg+xml;base64,${contact.avatarImage}`} alt="" />
                 </div>
-              );
-            })}
+                <div className="username">
+                  <h3>
+                    {contact.username}
+                    {isOnline && <span className="dot"></span>}
+                  </h3>
+                  <span>
+                    <b className={`${isOnline ? "gr" : "r"}`}>
+                      {isOnline ? "Online" : "Offline"}
+                    </b>
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div className="current-user">
+          <div className="avatar">
+            <img src={`data:image/svg+xml;base64,${currentUserImage}`} alt="avatar" />
           </div>
-          <div className="current-user">
-            <div className="avatar">
-              <img src={`data:image/svg+xml;base64,${currentUserImage}`} alt="avatar" />
-            </div>
-            <div className="username">
-              <h2>{currentUserName}</h2>
-            </div>
+          <div className="username">
+            <h2>{currentUserName}</h2>
           </div>
-        </Container>
-      )}
-    </>
+        </div>
+      </Container>
+    )}
+  </>
   );
 }
 
@@ -134,6 +137,16 @@ const Container = styled.div`
       text-transform: uppercase;
     }
   }
+  .username {
+    .dot {
+      width: 11px;
+      height: 11px;
+      background-color: #4CAF50; /* Green dot color */
+      border-radius: 50%;
+      margin-left: 5px; /* Adjust the spacing */
+      display: inline-block; /* Ensure inline block display */
+    }
+  }
   .contacts {
     display: flex;
     flex-direction: column;
@@ -147,6 +160,12 @@ const Container = styled.div`
         width: 0.1rem;
         border-radius: 1rem;
       }
+    }
+    .gr{
+      color:green;
+    }
+    .r{
+      color:red;
     }
     .contact {
       background-color: #ffffff34;
